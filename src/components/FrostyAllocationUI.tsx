@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const troopTypes = ["Infantry", "Lancer", "Marksman"];
 
@@ -22,20 +23,51 @@ const priorityOptions = [
   { label: "Marksman → Infantry → Lancer", value: "2,0,1" },
 ];
 
+const defaultConfigs: Record<string, { percentages: number[]; priority: string }> = {
+  PVE: { percentages: [50, 20, 30], priority: "0,2,1" },
+  Bear: { percentages: [10, 10, 80], priority: "2,1,0" },
+  Guarison: { percentages: [40, 40, 20], priority: "0,1,2" },
+  "Small Guarison": { percentages: [20, 20, 10], priority: "0,1,2" },
+  Custom: { percentages: [10, 10, 80], priority: "0,1,2" },
+};
+
 export default function FrostyAllocationUI() {
+  const [tab, setTab] = useState("PVE");
   const [available, setAvailable] = useState([0, 0, 0]);
-  const [percentages, setPercentages] = useState([10, 10, 80]);
-  const [priority, setPriority] = useState("0,1,2");
+  const [percentages, setPercentages] = useState(defaultConfigs[tab].percentages);
+  const [priority, setPriority] = useState(defaultConfigs[tab].priority);
   const [leaderTruck, setLeaderTruck] = useState(0);
   const [trucks, setTrucks] = useState([0]);
 
-  const priorityArray = priority.split(",").map(Number);
+  useEffect(() => {
+    const stored = localStorage.getItem(`frosty_state_${tab}`);
+    if (stored) {
+      const { available, percentages, priority, leaderTruck, trucks } = JSON.parse(stored);
+      setAvailable(available);
+      setPercentages(percentages);
+      setPriority(priority);
+      setLeaderTruck(leaderTruck);
+      setTrucks(trucks);
+    } else {
+      setPercentages(defaultConfigs[tab].percentages);
+      setPriority(defaultConfigs[tab].priority);
+      setAvailable([0, 0, 0]);
+      setLeaderTruck(0);
+      setTrucks([0]);
+    }
+  }, [tab]);
 
+  useEffect(() => {
+    localStorage.setItem(
+      `frosty_state_${tab}`,
+      JSON.stringify({ available, percentages, priority, leaderTruck, trucks })
+    );
+  }, [available, percentages, priority, leaderTruck, trucks, tab]);
+
+  const priorityArray = priority.split(",").map(Number);
   const totalCapacity = leaderTruck + trucks.reduce((a, b) => a + b, 0);
   const nonLeaderCapacity = totalCapacity - leaderTruck;
-
   const targetRatio = percentages.map((p) => p / 100);
-  const fixedLeaderAllocations = targetRatio.map((r) => Math.floor(r * leaderTruck));
 
   const leaderAllocations = [0, 0, 0];
   let leaderCapacityLeft = leaderTruck;
@@ -104,14 +136,19 @@ export default function FrostyAllocationUI() {
     e.target.select();
   };
 
-  const formatNumber = (value: number) =>
-    isNaN(value) ? "" : value.toLocaleString();
+  const formatNumber = (value: number) => isNaN(value) ? "" : value.toLocaleString();
 
   return (
     <div className="min-h-screen bg-[#f7faff] p-4 md:p-10 text-[#1e3a8a] font-sans">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Troop Allocation Planner
-      </h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Troop Allocation Planner</h1>
+
+      <Tabs value={tab} onValueChange={setTab} className="mb-6">
+        <TabsList className="flex flex-wrap gap-2 justify-center">
+          {Object.keys(defaultConfigs).map((key) => (
+            <TabsTrigger key={key} value={key}>{key}</TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="space-y-6">
@@ -159,7 +196,6 @@ export default function FrostyAllocationUI() {
                   />
                 </div>
               ))}
-
               <div>
                 <label className="block font-semibold mb-1">Priority Order</label>
                 <Select value={priority} onValueChange={(val) => setPriority(val)}>
