@@ -8,7 +8,12 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+
+    "baseUrl": ".",                  // 👈 ADD THIS
+    "paths": {
+      "@/*": ["src/*"]              // 👈 AND THIS
+    }
   },
   "include": ["src"]
 }
