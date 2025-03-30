@@ -263,8 +263,8 @@ export default function FrostyAllocationUI() {
                 <h2 className="text-xl font-semibold">Available Troops</h2>
                 {troopTypes.map((type, index) => (
                   <div key={index}>
-                    <label className="block font-medium text-gray-700 mb-1">{type}:</label>
-                    <Input
+                    <label className="block font-medium text-blue-700 mb-1">{type}:</label>
+                    <Input className="focus:ring-blue-500 focus:border-blue-500"
                       type="text"
                       inputMode="numeric"
                       value={formatNumber(available[index])}
@@ -285,13 +285,18 @@ export default function FrostyAllocationUI() {
                 <h2 className="text-xl font-semibold">Target Percentages</h2>
                 {troopTypes.map((type, index) => (
                   <div key={index}>
-                    <label className="block font-medium text-gray-700 mb-1">
+                    <label className="block font-medium text-blue-700 mb-1">
                       {type} Target: {percentages[index]}%
                     </label>
                     <div className="flex items-center gap-2">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button size="sm" variant="outline" onClick={() => updatePercentage(index, percentages[index] - 1)}>−</Button>
+                        <Button 
+                          className="bg-blue-600 hover:bg-blue-700 text-white"
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => updatePercentage(index, percentages[index] - 1)}>−
+                        </Button>
                       </TooltipTrigger>
                       <TooltipContent side="top" className="bg-white text-black border shadow px-2 py-1 text-sm rounded">Decrease percentage
                       </TooltipContent>
@@ -308,7 +313,12 @@ export default function FrostyAllocationUI() {
                       />
                     <Tooltip>
                       <TooltipTrigger asChild>    
-                        <Button size="sm" variant="outline" onClick={() => updatePercentage(index, percentages[index] + 1)}>+</Button>
+                        <Button 
+                          className="bg-blue-600 hover:bg-blue-700 text-white"
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => updatePercentage(index, percentages[index] + 1)}>+
+                        </Button>
                       </TooltipTrigger>
                       <TooltipContent side="top" className="bg-white text-black border shadow px-2 py-1 text-sm rounded">Increase percentage</TooltipContent>
                     </Tooltip>
@@ -355,7 +365,7 @@ export default function FrostyAllocationUI() {
               <CardContent className="space-y-4">
                 <h2 className="text-xl font-semibold">Adjusted Allocations</h2>
                 {troopTypes.map((type, index) => (
-                  <div key={index} className="text-sm text-gray-800">
+                  <div key={index} className="text-sm text-blue-800">
                     {type}: {adjustedAllocations[index].toLocaleString()} / {available[index].toLocaleString()} ({adjustedPercentages[index]}%)
                     <div className="w-full bg-blue-100 rounded h-2 mt-1">
                       <div
@@ -365,7 +375,7 @@ export default function FrostyAllocationUI() {
                     </div>
                   </div>
                 ))}
-                <div className="text-sm text-gray-600 mt-2">
+                <div className="text-sm text-blue-600 mt-2">
                   Total Capacity: {totalCapacity.toLocaleString()} | Remaining Capacity: {capacityLeft.toLocaleString()}
                 </div>
               </CardContent>
@@ -378,7 +388,7 @@ export default function FrostyAllocationUI() {
                 <h2 className="text-xl font-semibold">March Input</h2>
                 <div className="space-y-1">
                   <label className="block font-medium">
-                    Rally Caller March Size: <span className="text-sm text-gray-700">{leaderAllocations[0].toLocaleString()} → {leaderAllocations[1].toLocaleString()} → {leaderAllocations[2].toLocaleString()}</span>
+                    Rally Caller March Size: <span className="text-sm text-blue-700">{leaderAllocations[0].toLocaleString()} → {leaderAllocations[1].toLocaleString()} → {leaderAllocations[2].toLocaleString()}</span>
                   </label>
                   <Input
                     type="text"
@@ -394,7 +404,7 @@ export default function FrostyAllocationUI() {
                   return (
                     <div key={idx} className="space-y-1">
                       <label className="block font-medium">
-                        March {idx + 1} Size: <span className="text-sm text-gray-700">{breakdown[0].toLocaleString()} → {breakdown[1].toLocaleString()} → {breakdown[2].toLocaleString()}</span>
+                        March {idx + 1} Size: <span className="text-sm text-blue-700">{breakdown[0].toLocaleString()} → {breakdown[1].toLocaleString()} → {breakdown[2].toLocaleString()}</span>
                       </label>
                       <div className="flex gap-2 items-center">
                         <Input
@@ -411,6 +421,7 @@ export default function FrostyAllocationUI() {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
+                              className="bg-blue-600 hover:bg-blue-700 text-white"
                               size="sm"
                               onClick={() => {
                                 const updated = [...trucks];
@@ -432,14 +443,21 @@ export default function FrostyAllocationUI() {
                 <div className="flex gap-4 pt-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button onClick={() => setTrucks([...trucks, 0])}>Add March</Button>
+                    <Button 
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                      onClick={() => setTrucks([...trucks, 0])}>Add March
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="bg-white text-black border shadow px-2 py-1 text-sm rounded"> Add a new march line</TooltipContent>
                 </Tooltip>
                 
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" onClick={() => setTrucks(trucks.slice(0, -1))} disabled={trucks.length === 0}>
+                    <Button 
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                      variant="outline" 
+                      onClick={() => setTrucks(trucks.slice(0, -1))} 
+                      disabled={trucks.length === 0}>
                       Remove March
                     </Button>
                   </TooltipTrigger>
