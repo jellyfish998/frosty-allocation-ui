@@ -26,7 +26,7 @@ const priorityOptions = [
 const defaultConfigs: Record<string, { percentages: number[]; priority: string }> = {
   PVE: { percentages: [50, 20, 30], priority: "0,2,1" },
   Bear: { percentages: [10, 10, 80], priority: "2,1,0" },
-  Guarison: { percentages: [40, 40, 20], priority: "0,1,2" },
+  Garrison: { percentages: [40, 40, 20], priority: "0,1,2" },
   "Small Guarison": { percentages: [20, 20, 10], priority: "0,1,2" },
   Custom: { percentages: [10, 10, 80], priority: "0,1,2" },
 };
@@ -34,6 +34,7 @@ const defaultConfigs: Record<string, { percentages: number[]; priority: string }
 export default function FrostyAllocationUI() {
   const [tab, setTab] = useState("PVE");
   const [available, setAvailable] = useState([0, 0, 0]);
+  const [sharedAvailable, setSharedAvailable] = useState([0, 0, 0]);
   const [percentages, setPercentages] = useState(defaultConfigs[tab].percentages);
   const [priority, setPriority] = useState(defaultConfigs[tab].priority);
   const [leaderTruck, setLeaderTruck] = useState(0);
@@ -51,9 +52,9 @@ export default function FrostyAllocationUI() {
     } else {
       setPercentages(defaultConfigs[tab].percentages);
       setPriority(defaultConfigs[tab].priority);
-      setAvailable([0, 0, 0]);
-      setLeaderTruck(0);
-      setTrucks([0]);
+      setAvailable(sharedAvailable);
+      setLeaderTruck(leaderTruck);
+      setTrucks(trucks);
     }
   }, [tab]);
 
@@ -62,6 +63,7 @@ export default function FrostyAllocationUI() {
       `frosty_state_${tab}`,
       JSON.stringify({ available, percentages, priority, leaderTruck, trucks })
     );
+    setSharedAvailable(available);
   }, [available, percentages, priority, leaderTruck, trucks, tab]);
 
   const priorityArray = priority.split(",").map(Number);
@@ -182,35 +184,51 @@ export default function FrostyAllocationUI() {
                   <label className="block font-medium text-gray-700 mb-1">
                     {type} Target: {percentages[index]}%
                   </label>
-                  <Slider
-                    value={[percentages[index]]}
-                    onValueChange={(val) => {
-                      const newValue = val[0];
+                  <div className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" onClick={() => {
                       const updated = [...percentages];
-                      updated[index] = newValue;
+                      updated[index] = Math.max(0, updated[index] - 1);
                       setPercentages(updated);
-                    }}
-                    min={0}
-                    max={100}
-                    step={1}
-                  />
+                    }}>−</Button>
+                    <Slider
+                      value={[percentages[index]]}
+                      onValueChange={(val) => {
+                        const newValue = val[0];
+                        const updated = [...percentages];
+                        updated[index] = newValue;
+                        setPercentages(updated);
+                      }}
+                      min={0}
+                      max={100}
+                      step={10}
+                      detents={true}
+                      className="flex-1"
+                    />
+                    <Button size="sm" variant="outline" onClick={() => {
+                      const updated = [...percentages];
+                      updated[index] = Math.min(100, updated[index] + 1);
+                      setPercentages(updated);
+                    }}>+</Button>
+                  </div>
                 </div>
               ))}
-              <div>
-                <label className="block font-semibold mb-1">Priority Order</label>
-                <Select value={priority} onValueChange={(val) => setPriority(val)}>
-                  <SelectTrigger className="bg-white/70">
-                    <SelectValue>{selectedPriorityLabel}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {priorityOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              {tab === "Custom" && (
+                <div>
+                  <label className="block font-semibold mb-1">Priority Order</label>
+                  <Select value={priority} onValueChange={(val) => setPriority(val)}>
+                    <SelectTrigger className="bg-white/70">
+                      <SelectValue>{selectedPriorityLabel}</SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {priorityOptions.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -298,3 +316,4 @@ export default function FrostyAllocationUI() {
     </div>
   );
 }
+
