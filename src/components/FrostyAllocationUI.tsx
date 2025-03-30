@@ -263,7 +263,7 @@ export default function FrostyAllocationUI() {
                 <h2 className="text-xl font-semibold">Available Troops</h2>
                 {troopTypes.map((type, index) => (
                   <div key={index}>
-                    <label className="block font-medium text-blue-700 mb-1">{type}:</label>
+                    <label className="block font-medium text-gray-700 mb-1">{type}:</label>
                     <Input className="focus:ring-blue-500 focus:border-blue-500"
                       type="text"
                       inputMode="numeric"
@@ -285,7 +285,7 @@ export default function FrostyAllocationUI() {
                 <h2 className="text-xl font-semibold">Target Percentages</h2>
                 {troopTypes.map((type, index) => (
                   <div key={index}>
-                    <label className="block font-medium text-blue-700 mb-1">
+                    <label className="block font-medium text-gray-700 mb-1">
                       {type} Target: {percentages[index]}%
                     </label>
                     <div className="flex items-center gap-2">
@@ -302,14 +302,19 @@ export default function FrostyAllocationUI() {
                       </TooltipContent>
                     </Tooltip>
 
-                      <Slider
+                      <Slider 
+                     className="flex-1
+                        [data-part=track]:bg-blue-100
+                        [data-part=range]:bg-blue-500
+                        [&>div>div]:bg-blue-100
+                        [&>div>div>div]:bg-blue-500"
                         value={[percentages[index]]}
                         onValueChange={(val) => updatePercentage(index, val[0])}
                         min={0}
                         max={100}
                         step={10}
                         //detents={true}
-                        className="flex-1"
+                        
                       />
                     <Tooltip>
                       <TooltipTrigger asChild>    
@@ -365,7 +370,7 @@ export default function FrostyAllocationUI() {
               <CardContent className="space-y-4">
                 <h2 className="text-xl font-semibold">Adjusted Allocations</h2>
                 {troopTypes.map((type, index) => (
-                  <div key={index} className="text-sm text-blue-800">
+                  <div key={index} className="text-sm text-grey-800">
                     {type}: {adjustedAllocations[index].toLocaleString()} / {available[index].toLocaleString()} ({adjustedPercentages[index]}%)
                     <div className="w-full bg-blue-100 rounded h-2 mt-1">
                       <div
@@ -375,7 +380,7 @@ export default function FrostyAllocationUI() {
                     </div>
                   </div>
                 ))}
-                <div className="text-sm text-blue-600 mt-2">
+                <div className="text-sm text-grey-600 mt-2">
                   Total Capacity: {totalCapacity.toLocaleString()} | Remaining Capacity: {capacityLeft.toLocaleString()}
                 </div>
               </CardContent>
