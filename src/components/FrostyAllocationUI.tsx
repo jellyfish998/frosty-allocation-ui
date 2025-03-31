@@ -395,13 +395,11 @@ export default function FrostyAllocationUI() {
                       </span>
                       &nbsp;(
                       <span
-                        onClick={() => copyToClipboard(adjustedPercentages[index].toString())}
-                        className="cursor-pointer underline text-blue-700 hover:text-blue-900"
-                        title="Click to copy"
-                      >
-                        {adjustedPercentages[index]}%
-                      </span>)
-
+						  onClick={() => copyToClipboard(Math.round(adjustedPercentages[index]).toString())}
+						  className="cursor-pointer text-blue-700 hover:text-blue-900"
+						  title="Click to copy">
+						  {adjustedPercentages[index]}%
+						</span>
                     <div className="w-full bg-blue-100 rounded h-2 mt-1">
                       <div
                         className="bg-blue-500 h-2 rounded"
@@ -533,3 +531,4 @@ export default function FrostyAllocationUI() {
     </TooltipProvider>
   );
 }
+
