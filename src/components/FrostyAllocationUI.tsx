@@ -39,6 +39,13 @@ const priorityOptions = [
   { label: "Marksman → Infantry → Lancer", value: "2,0,1" },
 ];
 
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text).then(() => {
+    // Optionally show toast/alert
+    console.log("Copied:", text);
+  });
+};
+
 const defaultConfigs: Record<string, { percentages: number[]; priority: string }> = {
   PVE: { percentages: [50, 20, 30], priority: "0,2,1" },
   Bear: { percentages: [10, 10, 80], priority: "2,1,0" },
@@ -263,7 +270,7 @@ export default function FrostyAllocationUI() {
                 <h2 className="text-xl font-semibold">Available Troops</h2>
                 {troopTypes.map((type, index) => (
                   <div key={index}>
-                    <label className="block font-medium text-blue-700 mb-1">{type}:</label>
+                    <label className="block font-medium text-gray-700 mb-1">{type}:</label>
                     <Input className="focus:ring-blue-500 focus:border-blue-500"
                       type="text"
                       inputMode="numeric"
@@ -285,7 +292,7 @@ export default function FrostyAllocationUI() {
                 <h2 className="text-xl font-semibold">Target Percentages</h2>
                 {troopTypes.map((type, index) => (
                   <div key={index}>
-                    <label className="block font-medium text-blue-700 mb-1">
+                    <label className="block font-medium text-gray-700 mb-1">
                       {type} Target: {percentages[index]}%
                     </label>
                     <div className="flex items-center gap-2">
@@ -302,14 +309,18 @@ export default function FrostyAllocationUI() {
                       </TooltipContent>
                     </Tooltip>
 
-                      <Slider
+                      <Slider 
+                       className="flex-1
+                        [data-part=track]:bg-blue-100
+                        [data-part=range]:bg-blue-500
+                        [&>div>div]:bg-blue-100
+                        [&>div>div>div]:bg-blue-500"
                         value={[percentages[index]]}
                         onValueChange={(val) => updatePercentage(index, val[0])}
                         min={0}
                         max={100}
                         step={10}
-                        //detents={true}
-                        className="flex-1"
+                        //detents={true}                        
                       />
                     <Tooltip>
                       <TooltipTrigger asChild>    
@@ -365,8 +376,32 @@ export default function FrostyAllocationUI() {
               <CardContent className="space-y-4">
                 <h2 className="text-xl font-semibold">Adjusted Allocations</h2>
                 {troopTypes.map((type, index) => (
-                  <div key={index} className="text-sm text-blue-800">
-                    {type}: {adjustedAllocations[index].toLocaleString()} / {available[index].toLocaleString()} ({adjustedPercentages[index]}%)
+                  <div key={index} className="text-sm text-grey-800">
+                    {type}:&nbsp;
+                      <span
+                        onClick={() => copyToClipboard(adjustedAllocations[index].toString())}
+                        className="cursor-pointer underline text-blue-700 hover:text-blue-900"
+                        title="Click to copy"
+                      >
+                        {adjustedAllocations[index].toLocaleString()}
+                      </span>
+                      &nbsp;/&nbsp;
+                      <span
+                        onClick={() => copyToClipboard(available[index].toString())}
+                        className="cursor-pointer underline text-blue-700 hover:text-blue-900"
+                        title="Click to copy"
+                      >
+                        {available[index].toLocaleString()}
+                      </span>
+                      &nbsp;(
+                      <span
+                        onClick={() => copyToClipboard(adjustedPercentages[index].toString())}
+                        className="cursor-pointer underline text-blue-700 hover:text-blue-900"
+                        title="Click to copy"
+                      >
+                        {adjustedPercentages[index]}%
+                      </span>)
+
                     <div className="w-full bg-blue-100 rounded h-2 mt-1">
                       <div
                         className="bg-blue-500 h-2 rounded"
@@ -375,7 +410,7 @@ export default function FrostyAllocationUI() {
                     </div>
                   </div>
                 ))}
-                <div className="text-sm text-blue-600 mt-2">
+                <div className="text-sm text-grey-600 mt-2">
                   Total Capacity: {totalCapacity.toLocaleString()} | Remaining Capacity: {capacityLeft.toLocaleString()}
                 </div>
               </CardContent>
@@ -404,7 +439,33 @@ export default function FrostyAllocationUI() {
                   return (
                     <div key={idx} className="space-y-1">
                       <label className="block font-medium">
-                        March {idx + 1} Size: <span className="text-sm text-blue-700">{breakdown[0].toLocaleString()} → {breakdown[1].toLocaleString()} → {breakdown[2].toLocaleString()}</span>
+                        March {idx + 1} Size: 
+							<span className="text-sm text-blue-700 space-x-1">
+							  <span
+								className="cursor-pointer underline hover:text-blue-900"
+								onClick={() => copyToClipboard(breakdown[0].toString())}
+								title="Click to copy"
+							  >
+								{breakdown[0].toLocaleString()}
+							  </span>
+							  →
+							  <span
+								className="cursor-pointer underline hover:text-blue-900"
+								onClick={() => copyToClipboard(breakdown[1].toString())}
+								title="Click to copy"
+							  >
+								{breakdown[1].toLocaleString()}
+							  </span>
+							  →
+							  <span
+								className="cursor-pointer underline hover:text-blue-900"
+								onClick={() => copyToClipboard(breakdown[2].toString())}
+								title="Click to copy"
+							  >
+								{breakdown[2].toLocaleString()}
+							  </span>
+							</span>
+
                       </label>
                       <div className="flex gap-2 items-center">
                         <Input
@@ -472,4 +533,3 @@ export default function FrostyAllocationUI() {
     </TooltipProvider>
   );
 }
-
