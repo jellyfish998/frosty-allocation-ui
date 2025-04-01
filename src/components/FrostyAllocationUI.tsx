@@ -39,6 +39,13 @@ const priorityOptions = [
   { label: "Marksman → Infantry → Lancer", value: "2,0,1" },
 ];
 
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text).then(() => {
+    // Optionally show toast/alert
+    console.log("Copied:", text);
+  });
+};
+
 const defaultConfigs: Record<string, { percentages: number[]; priority: string }> = {
   PVE: { percentages: [50, 20, 30], priority: "0,2,1" },
   Bear: { percentages: [10, 10, 80], priority: "2,1,0" },
@@ -303,7 +310,11 @@ export default function FrostyAllocationUI() {
                     </Tooltip>
 
                       <Slider 
+<<<<<<< HEAD
                      className="flex-1
+=======
+                       className="flex-1
+>>>>>>> afe72f8397b305006b6cb8770ffbca29105a9126
                         [data-part=track]:bg-blue-100
                         [data-part=range]:bg-blue-500
                         [&>div>div]:bg-blue-100
@@ -313,8 +324,12 @@ export default function FrostyAllocationUI() {
                         min={0}
                         max={100}
                         step={10}
+<<<<<<< HEAD
                         //detents={true}
                         
+=======
+                        //detents={true}                        
+>>>>>>> afe72f8397b305006b6cb8770ffbca29105a9126
                       />
                     <Tooltip>
                       <TooltipTrigger asChild>    
@@ -371,7 +386,33 @@ export default function FrostyAllocationUI() {
                 <h2 className="text-xl font-semibold">Adjusted Allocations</h2>
                 {troopTypes.map((type, index) => (
                   <div key={index} className="text-sm text-grey-800">
+<<<<<<< HEAD
                     {type}: {adjustedAllocations[index].toLocaleString()} / {available[index].toLocaleString()} ({adjustedPercentages[index]}%)
+=======
+                    {type}:&nbsp;
+                      <span
+                        onClick={() => copyToClipboard(adjustedAllocations[index].toString())}
+                        className="cursor-pointer underline text-blue-700 hover:text-blue-900"
+                        title="Click to copy"
+                      >
+                        {adjustedAllocations[index].toLocaleString()}
+                      </span>
+                      &nbsp;/&nbsp;
+                      <span
+                        onClick={() => copyToClipboard(available[index].toString())}
+                        className="cursor-pointer underline text-blue-700 hover:text-blue-900"
+                        title="Click to copy"
+                      >
+                        {available[index].toLocaleString()}
+                      </span>
+                      &nbsp;(
+                      <span
+						  onClick={() => copyToClipboard(Math.round(adjustedPercentages[index]).toString())}
+						  className="cursor-pointer text-blue-700 hover:text-blue-900"
+						  title="Click to copy">
+						  {adjustedPercentages[index]}%
+						</span>
+>>>>>>> afe72f8397b305006b6cb8770ffbca29105a9126
                     <div className="w-full bg-blue-100 rounded h-2 mt-1">
                       <div
                         className="bg-blue-500 h-2 rounded"
@@ -409,7 +450,33 @@ export default function FrostyAllocationUI() {
                   return (
                     <div key={idx} className="space-y-1">
                       <label className="block font-medium">
-                        March {idx + 1} Size: <span className="text-sm text-blue-700">{breakdown[0].toLocaleString()} → {breakdown[1].toLocaleString()} → {breakdown[2].toLocaleString()}</span>
+                        March {idx + 1} Size: 
+							<span className="text-sm text-blue-700 space-x-1">
+							  <span
+								className="cursor-pointer underline hover:text-blue-900"
+								onClick={() => copyToClipboard(breakdown[0].toString())}
+								title="Click to copy"
+							  >
+								{breakdown[0].toLocaleString()}
+							  </span>
+							  →
+							  <span
+								className="cursor-pointer underline hover:text-blue-900"
+								onClick={() => copyToClipboard(breakdown[1].toString())}
+								title="Click to copy"
+							  >
+								{breakdown[1].toLocaleString()}
+							  </span>
+							  →
+							  <span
+								className="cursor-pointer underline hover:text-blue-900"
+								onClick={() => copyToClipboard(breakdown[2].toString())}
+								title="Click to copy"
+							  >
+								{breakdown[2].toLocaleString()}
+							  </span>
+							</span>
+
                       </label>
                       <div className="flex gap-2 items-center">
                         <Input
