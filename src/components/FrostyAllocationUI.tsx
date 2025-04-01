@@ -395,13 +395,11 @@ export default function FrostyAllocationUI() {
                       </span>
                       &nbsp;(
                       <span
-                        onClick={() => copyToClipboard(adjustedPercentages[index].toString())}
-                        className="cursor-pointer underline text-blue-700 hover:text-blue-900"
-                        title="Click to copy"
-                      >
-                        {adjustedPercentages[index]}%
-                      </span>)
-
+						  onClick={() => copyToClipboard(Math.round(adjustedPercentages[index]).toString())}
+						  className="cursor-pointer text-blue-700 hover:text-blue-900"
+						  title="Click to copy">
+						  {adjustedPercentages[index]}%
+						</span>
                     <div className="w-full bg-blue-100 rounded h-2 mt-1">
                       <div
                         className="bg-blue-500 h-2 rounded"
@@ -439,7 +437,33 @@ export default function FrostyAllocationUI() {
                   return (
                     <div key={idx} className="space-y-1">
                       <label className="block font-medium">
-                        March {idx + 1} Size: <span className="text-sm text-blue-700">{breakdown[0].toLocaleString()} → {breakdown[1].toLocaleString()} → {breakdown[2].toLocaleString()}</span>
+                        March {idx + 1} Size: 
+							<span className="text-sm text-blue-700 space-x-1">
+							  <span
+								className="cursor-pointer underline hover:text-blue-900"
+								onClick={() => copyToClipboard(breakdown[0].toString())}
+								title="Click to copy"
+							  >
+								{breakdown[0].toLocaleString()}
+							  </span>
+							  →
+							  <span
+								className="cursor-pointer underline hover:text-blue-900"
+								onClick={() => copyToClipboard(breakdown[1].toString())}
+								title="Click to copy"
+							  >
+								{breakdown[1].toLocaleString()}
+							  </span>
+							  →
+							  <span
+								className="cursor-pointer underline hover:text-blue-900"
+								onClick={() => copyToClipboard(breakdown[2].toString())}
+								title="Click to copy"
+							  >
+								{breakdown[2].toLocaleString()}
+							  </span>
+							</span>
+
                       </label>
                       <div className="flex gap-2 items-center">
                         <Input
